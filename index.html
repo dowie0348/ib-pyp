@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IB PYP 교사 지원 스마트 툴킷</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for Rendering Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- html2pdf.js for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- docx.js and FileSaver for Word Exporting -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-btn.active {
+            border-bottom-color: #2563eb;
+            color: #2563eb;
+            background-color: #eff6ff;
+            font-weight: 600;
+        }
+        /* Readable Print/Export Container Styles */
+        .export-container {
+            background-color: #ffffff;
+            color: #0f172a;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            background-color: #ffffff;
+        }
+        .prose th, .prose td {
+            border: 1px solid #cbd5e1;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+        .prose th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .prose tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .prose h1, .prose h2, .prose h3 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .prose h1 { font-size: 1.5rem; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }
+        .prose h2 { font-size: 1.25rem; color: #1e3a8a; }
+        .prose h3 { font-size: 1.1rem; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
+        .prose p { margin-bottom: 0.85rem; }
+
+        /* ContentEditable visual feedback */
+        .editable-active [contenteditable="true"] {
+            outline: 2px dashed #3b82f6 !important;
+            outline-offset: 2px;
+            background-color: #f0f9ff;
+            cursor: text;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-3 bg-indigo-700 rounded-xl shadow-inner">
+                    <i class="fa-solid fa-graduation-cap text-2xl text-amber-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">IB PYP 교사 지원 스마트 툴킷</h1>
+                    <p class="text-xs text-indigo-200 mt-1">개념 기반 탐구 · 평가 설계 · 차별화 학습지 · PDF/Word 및 통합 보고서 생성</p>
+                </div>
+            </div>
+            
+            <!-- Quick Preset Selector & Final Report Shortcut -->
+            <div class="flex flex-wrap items-center gap-2 bg-indigo-800/80 p-2 rounded-lg border border-indigo-700">
+                <button onclick="openApiKeyModal()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white font-bold py-1.5 px-3 rounded shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-key text-amber-400"></i> <span id="key-btn-text">API 키 설정</span>
+                </button>
+                <button onclick="loadSampleData()" class="text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-1.5 px-3 rounded shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 예시데이터 채우기
+                </button>
+                <button onclick="openFinalReportModal()" class="text-xs bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1.5 px-3 rounded shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-file-pdf"></i> 전체 UOI 통합보고서
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto">
+            <div class="flex space-x-2 min-w-max py-2">
+                <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn active px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-circle-question"></i> 1. 핵심개념 질문 추출
+                </button>
+                <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-layer-group"></i> 2. 수준별 탐구 학습지
+                </button>
+                <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-table-list"></i> 3. 평가 루브릭 생성 (편집)
+                </button>
+                <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-child-reaching"></i> 4. 학생 성찰지 변환
+                </button>
+                <button onclick="switchTab('tab5')" id="btn-tab5" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-pen-to-square"></i> 5. 생기부/통합 보고서
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+
+        <!-- Toast Notification Area -->
+        <div id="toast" class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 transition-opacity duration-300">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toast-msg" class="text-sm font-medium">작업이 완료되었습니다.</span>
+        </div>
+
+        <!-- ================= TAB 1: INQUIRY QUESTIONS ================= -->
+        <div id="tab1" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-indigo-600"></i> 단원 및 핵심개념 지정
+                        </h2>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">Step 1</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">단원 주제 / 키워드</label>
+                            <input type="text" id="t1-topic" placeholder="예: 우수영 역사 문화유산과 이순신의 리더십" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">중심 아이디어 (Central Idea)</label>
+                            <input type="text" id="t1-central" placeholder="예: 지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식에 영향을 준다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">강조하고 싶은 핵심 개념 (Key Concepts)</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 mt-1">
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="형태(Form)" class="rounded text-indigo-600"> 형태 (Form)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="기능(Function)" class="rounded text-indigo-600"> 기능 (Function)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="인과관계(Cause)" class="rounded text-indigo-600"> 인과관계 (Cause)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="변화(Change)" class="rounded text-indigo-600"> 변화 (Change)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="연결(Connection)" class="rounded text-indigo-600"> 연결 (Connection)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="관점(Perspective)" class="rounded text-indigo-600"> 관점 (Perspective)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="책임(Responsibility)" class="rounded text-indigo-600"> 책임 (Responsibility)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="generateQuestions()" id="btn-gen-q" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 3대 탐구 질문 (Factual/Conceptual/Debatable) 추출
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
+                    <div>
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-comments text-emerald-600"></i> IB 3대 유형 탐구 질문
+                            </h3>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="copyToClipboard('out-q')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> 복사
+                                </button>
+                                <button onclick="exportToPDF('out-q', 'IB_탐구질문')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                                <button onclick="exportToWord('out-q', 'IB_탐구질문')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-word"></i> Word
+                                </button>
+                            </div>
+                        </div>
+                        <div id="out-q" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                            <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <i class="fa-solid fa-circle-question text-4xl mb-3"></i>
+                                <p class="text-sm">단원 주제 및 핵심 개념 입력 후 질문 추출 버튼을 눌러주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: DIFFERENTIATED WORKSHEET ================= -->
+        <div id="tab2" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open text-indigo-600"></i> 원문 텍스트 및 탐구 주제
+                        </h2>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">Step 2</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">탐구 주제 / 영역</label>
+                            <input type="text" id="t2-topic" placeholder="예: 명량해전 당시 울돌목의 지형과 이순신 장군의 리더십" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">원문 텍스트 (사료/해설문/기사 등)</label>
+                            <textarea id="t2-text" rows="8" placeholder="예: 전라우수영은 조선 시대 전라도 수군을 총괄하던 해군 기지이다. 특히 울돌목은 폭이 좁고 물살이 몹시 거세어 거대한 배도 중심을 잡기 어려운 천혜의 요새였다. 이순신 장군은 13척의 적은 배로 133척의 왜선을 상대할 때, 울돌목의 좁은 지형과 하루에 네 번 바뀌는 조류를 철저히 계산하여 명량대첩을 승리로 이끌었다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">연계 IB 핵심 개념 (Key Concepts)</label>
+                            <input type="text" id="t2-concept" placeholder="예: 인과관계(Cause), 형태(Form)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <button onclick="generateDiffWorksheet()" id="btn-gen-diff" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 상/중/하 3단계 차별화 학습지 가공
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
+                    <div>
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-cubes text-emerald-600"></i> 수준별 탐구 학습지 (상·중·하)
+                            </h3>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="copyToClipboard('out-diff')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> 복사
+                                </button>
+                                <button onclick="exportToPDF('out-diff', '수준별_탐구학습지')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                                <button onclick="exportToWord('out-diff', '수준별_탐구학습지')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-word"></i> Word
+                                </button>
+                            </div>
+                        </div>
+                        <div id="out-diff" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                            <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <i class="fa-solid fa-layer-group text-4xl mb-3"></i>
+                                <p class="text-sm">원문 입력 후 차별화 학습지 가공 버튼을 눌러주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: RUBRIC GENERATOR & EDITABLE ================= -->
+        <div id="tab3" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-indigo-600"></i> UOI 단원 정보 입력
+                        </h2>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">Step 3</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">학년 / 학기</label>
+                            <input type="text" id="t3-grade" placeholder="예: 초등 4학년 2학기" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">초학문적 주제 (Transdisciplinary Theme)</label>
+                            <input type="text" id="t3-theme" placeholder="예: 우리가 서 있는 시간과 공간 (Where we are in place and time)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">중심 아이디어 (Central Idea)</label>
+                            <textarea id="t3-central" rows="2" placeholder="예: 지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식과 지역 정체성에 깊은 영향을 미친다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">명시된 개념 (Key Concepts)</label>
+                            <input type="text" id="t3-concepts" placeholder="예: 인과관계(Cause), 관점(Perspective), 책임(Responsibility)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">주요 ATL 역량 (Approaches to Learning)</label>
+                            <input type="text" id="t3-atl" placeholder="예: 사고 기능(비판적 사고), 조사 기능(자료 분석), 의사소통 기능(보고서 작성)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">평가 과제 (GRASPS/수행과제)</label>
+                            <textarea id="t3-task" rows="3" placeholder="예: '우수영 마을 탐험대'가 되어 명량해전과 지역 문화유산(강강술래, 전라우수영성지)을 조사하고 탐험 보고서 및 홍보 포스터 제작하기" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                    </div>
+
+                    <button onclick="generateRubric()" id="btn-gen-rubric" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 4단계 IB 평가 루브릭 생성
+                    </button>
+                </div>
+
+                <!-- Output Panel with DIRECT EDIT TOGGLE -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
+                    <div>
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-contract text-emerald-600"></i> 생성된 교사용 루브릭
+                                </h3>
+                                <!-- Direct Edit Toggle Button -->
+                                <button onclick="toggleEditRubric()" id="btn-edit-rubric" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-1 px-3 rounded-md border border-amber-300 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-pen-to-square"></i> 직접 수정 모드 OFF
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="copyToClipboard('out-rubric')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> 복사
+                                </button>
+                                <button onclick="exportToPDF('out-rubric', 'IB_교사_평가루브릭')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                                <button onclick="exportToWord('out-rubric', 'IB_교사_평가루브릭')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-word"></i> Word
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Info Banner for Editing -->
+                        <div id="edit-info-bar" class="hidden mb-3 p-2.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-blue-600"></i>
+                            <span>수정 모드가 켜졌습니다. 아래 표의 칸이나 글자를 마우스로 직접 클릭하여 자유롭게 수정해 보세요!</span>
+                        </div>
+
+                        <div id="out-rubric" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                            <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <i class="fa-solid fa-clipboard-list text-4xl mb-3"></i>
+                                <p class="text-sm">단원 정보 입력 후 생성 버튼을 눌러주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom Next Step CTA -->
+                    <div id="cta-to-tab4" class="hidden mt-6 pt-4 border-t border-slate-100 bg-amber-50 p-4 rounded-xl border border-amber-200 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <div class="text-xs text-amber-900">
+                            <span class="font-bold">💡 다음 추천 단계:</span> 생성 및 수정된 루브릭을 바탕으로 학생용 '나(I) 문장' 자기평가지를 생성하시겠습니까?
+                        </div>
+                        <button onclick="transferToTab4()" class="w-full sm:w-auto text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-2 px-4 rounded-lg shadow-sm transition whitespace-nowrap">
+                            학생용 성찰지로 이동 & 변환 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: STUDENT SELF-ASSESSMENT ================= -->
+        <div id="tab4" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-user-pen text-indigo-600"></i> 루브릭 입력 / 불러오기
+                        </h2>
+                        <button onclick="fetchRubricFromTab3()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-1.5 px-3 rounded-lg border border-indigo-200 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-import"></i> 3번 탭 루브릭 불러오기
+                        </button>
+                    </div>
+
+                    <!-- Structured Rubric Inputs -->
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">1. 개념 및 지식 기준 (Criteria 1)</label>
+                            <textarea id="t4-crit-concept" rows="3" placeholder="예: 명량해전의 배경과 과정, 이순신 장군의 리더십과 문화유산의 의미를 바르게 이해한다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">2. ATL 기능 / 과정 기준 (Criteria 2)</label>
+                            <textarea id="t4-crit-atl" rows="3" placeholder="예: 신뢰할 수 있는 자료를 조사하고 내용을 분석하여 구조화된 보고서로 작성한다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">3. 실천 및 학습자상 기준 (Criteria 3)</label>
+                            <textarea id="t4-crit-action" rows="3" placeholder="예: 지역 문화유산을 보존하고 홍보하기 위한 행동을 책임감 있게 실천하고 성찰한다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">학생 발달 수준 선택</label>
+                            <select id="t4-level" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                <option value="초등 3-4학년 눈높이 (친근하고 쉬운 어조)">초등 3-4학년 눈높이 (친근하고 쉬운 어조)</option>
+                                <option value="초등 1-2학년 눈높이 (매우 단순하고 명확한 문장)">초등 1-2학년 눈높이 (매우 단순하고 명확한 문장)</option>
+                                <option value="초등 5-6학년 눈높이 (자기주도적 자기점검 구체화)">초등 5-6학년 눈높이 (자기주도적 자기점검 구체화)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="generateSelfReflect()" id="btn-gen-self" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> '나(I) 문장' 자기평가지 생성
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
+                    <div>
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-clipboard-check text-emerald-600"></i> 학생용 성찰 및 자기평가지
+                            </h3>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="copyToClipboard('out-self')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> 복사
+                                </button>
+                                <button onclick="exportToPDF('out-self', '학생용_자기평가지')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                                <button onclick="exportToWord('out-self', '학생용_자기평가지')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-word"></i> Word
+                                </button>
+                            </div>
+                        </div>
+                        <div id="out-self" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                            <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <i class="fa-solid fa-smile-beam text-4xl mb-3"></i>
+                                <p class="text-sm">루브릭 기준 작성 또는 불러오기 후 생성 버튼을 눌러주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: REPORT & FULL COMPREHENSIVE DOC ================= -->
+        <div id="tab5" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-indigo-600"></i> 생기부 기록 & 통합 보고서
+                        </h2>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">Step 5</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">학생 이름/식별자 (선택)</label>
+                            <input type="text" id="t5-student" placeholder="예: 김OO 학생" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">수업 관찰 키워드 & 단편적 특성</label>
+                            <textarea id="t5-obs" rows="3" placeholder="예: 명량해전 조사 보고서 쓸 때 사료를 스스로 찾아와서 출처 정리 잘함. 모둠 활동 시 강강술래 동작 설명할 때 친구들 의견 잘 경청하고 보조 역할 잘 수행함." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">연계 ATL 역량</label>
+                                <select id="t5-atl" class="w-full px-2 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                    <option value="조사 기능 & 사고 기능">조사 기능 & 사고 기능</option>
+                                    <option value="의사소통 기능 & 사회적 기능">의사소통 기능 & 사회적 기능</option>
+                                    <option value="자기관리 기능 & 성찰">자기관리 기능 & 성찰</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">연계 IB 학습자상</label>
+                                <select id="t5-lp" class="w-full px-2 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                    <option value="탐구하는 사람 (Inquirers)">탐구하는 사람 (Inquirers)</option>
+                                    <option value="사고하는 사람 (Thinkers)">사고하는 사람 (Thinkers)</option>
+                                    <option value="소통하는 사람 (Communicators)">소통하는 사람 (Communicators)</option>
+                                    <option value="원칙을 지키는 사람 (Principled)">원칙을 지키는 사람 (Principled)</option>
+                                    <option value="배려하는 사람 (Caring)">배려하는 사람 (Caring)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="generateReportComment()" id="btn-gen-rep" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 개별 학생 나이스 종합의견 생성
+                    </button>
+
+                    <!-- COMPREHENSIVE REPORT GENERATOR BUTTON -->
+                    <div class="pt-4 border-t border-slate-200">
+                        <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200">
+                            <h4 class="text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-circle-check text-emerald-600"></i> 전 단원 통합 UOI 평가 보고서
+                            </h4>
+                            <p class="text-[11px] text-emerald-700 mb-3">1번~5번 탭에서 작성·생성된 모든 내용을 하나의 가독성 높은 종합 보고서 문서로 통합 생성합니다.</p>
+                            <button onclick="openFinalReportModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-book-bookmark"></i> 종합 UOI 보고서 생성 & 다운로드
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
+                    <div>
+                        <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-square-poll-vertical text-emerald-600"></i> 성장 기록 정제문 (개별 학생용)
+                            </h3>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="copyToClipboard('out-rep')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
+                                    <i class="fa-regular fa-copy"></i> 복사
+                                </button>
+                                <button onclick="exportToPDF('out-rep', '학생_성장기록문')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                                <button onclick="exportToWord('out-rep', '학생_성장기록문')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-word"></i> Word
+                                </button>
+                            </div>
+                        </div>
+                        <div id="out-rep" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                            <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <i class="fa-solid fa-pen-fancy text-4xl mb-3"></i>
+                                <p class="text-sm">학생 관찰 입력 후 종합의견 생성 버튼을 눌러주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FULL FINAL REPORT MODAL -->
+    <div id="report-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8 flex flex-col max-h-[90vh]">
+            <div class="bg-indigo-900 text-white p-5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-file-pdf text-amber-400 text-xl"></i>
+                    <h3 class="text-lg font-bold">IB UOI 전체 단원 통합 평가 보고서</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportToPDF('modal-report-body', 'IB_UOI_통합평가보고서')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-file-pdf"></i> PDF 다운로드
+                    </button>
+                    <button onclick="exportToWord('modal-report-body', 'IB_UOI_통합평가보고서')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-file-word"></i> Word 다운로드
+                    </button>
+                    <button onclick="closeFinalReportModal()" class="text-slate-300 hover:text-white p-1 text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow bg-slate-50">
+                <div id="modal-report-body" class="export-container prose max-w-none bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+                    <!-- Dynamic compiled report injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API KEY INPUT MODAL -->
+    <div id="apikey-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-key text-amber-400"></i> Gemini API 키 설정
+                </h3>
+                <button onclick="closeApiKeyModal()" class="text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4">
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    로컬 컴퓨터에서 AI 생성 기능을 이용하려면 **Google Gemini API Key**가 필요합니다.<br>
+                    입력하신 키는 서버로 전송되지 않고 선생님의 브라우저에만 안전하게 저장됩니다.
+                </p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Gemini API Key</label>
+                    <input type="password" id="input-api-key" placeholder="AIzaSy..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    💡 API 키가 없으신가요? 
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 font-bold underline">Google AI Studio</a>에서 발급받으실 수 있습니다.
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="closeApiKeyModal()" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">취소</button>
+                    <button onclick="saveApiKey()" class="px-4 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow">저장하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
+        <p>IB PYP 교사 지원 스마트 툴킷 · Powered by Gemini API · 우수영초등학교 특색교육 및 IB PYP 연계</p>
+    </footer>
+
+    <!-- Logic JavaScript -->
+    <script>
+        // API Key handling
+        let userApiKey = localStorage.getItem('gemini_api_key') || "";
+
+        function checkApiKeyStatus() {
+            const btnText = document.getElementById('key-btn-text');
+            if (userApiKey) {
+                btnText.innerText = "API 키 저장됨";
+            } else {
+                btnText.innerText = "API 키 설정";
+            }
+        }
+
+        function openApiKeyModal() {
+            document.getElementById('input-api-key').value = userApiKey;
+            document.getElementById('apikey-modal').classList.remove('hidden');
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('apikey-modal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const val = document.getElementById('input-api-key').value.trim();
+            if (val) {
+                userApiKey = val;
+                localStorage.setItem('gemini_api_key', val);
+                showToast("API 키가 안전하게 저장되었습니다.");
+            } else {
+                userApiKey = "";
+                localStorage.removeItem('gemini_api_key');
+                showToast("API 키가 삭제되었습니다.");
+            }
+            checkApiKeyStatus();
+            closeApiKeyModal();
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkApiKeyStatus();
+        });
+
+        // Global State Store
+        let lastGeneratedRubricText = "";
+        let isRubricEditable = false;
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // Preset Sample Loader for fast testing
+        function loadSampleData() {
+            // Tab 1
+            document.getElementById('t1-topic').value = "우수영 역사 문화유산과 이순신의 리더십";
+            document.getElementById('t1-central').value = "지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식에 영향을 준다.";
+            document.querySelectorAll('input[name="kc1"]').forEach(cb => {
+                if (["인과관계(Cause)", "관점(Perspective)", "책임(Responsibility)"].includes(cb.value)) cb.checked = true;
+            });
+
+            // Tab 2
+            document.getElementById('t2-topic').value = "명량해전 당시 울돌목의 지형과 이순신 장군의 리더십";
+            document.getElementById('t2-text').value = "전라우수영은 조선 시대 전라도 수군을 총괄하던 해군 기지이다. 특히 울돌목은 폭이 좁고 물살이 몹시 거세어 거대한 배도 중심을 잡기 어려운 천혜의 요새였다. 이순신 장군은 13척의 적은 배로 133척의 왜선을 상대할 때, 울돌목의 좁은 지형과 하루에 네 번 바뀌는 조류(물살의 방향)를 철저히 계산하여 명량대첩을 승리로 이끌었다.";
+            document.getElementById('t2-concept').value = "인과관계(Cause), 형태(Form)";
+
+            // Tab 3
+            document.getElementById('t3-grade').value = "초등 4학년 2학기";
+            document.getElementById('t3-theme').value = "우리가 서 있는 시간과 공간 (Where we are in place and time)";
+            document.getElementById('t3-central').value = "지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식과 지역 정체성에 깊은 영향을 미친다.";
+            document.getElementById('t3-concepts').value = "인과관계(Cause), 관점(Perspective), 책임(Responsibility)";
+            document.getElementById('t3-atl').value = "사고 기능(비판적 사고), 조사 기능(자료 분석), 의사소통 기능(보고서 작성)";
+            document.getElementById('t3-task').value = "'우수영 마을 탐험대'가 되어 명량해전과 지역 문화유산(강강술래, 전라우수영성지)을 조사하고 탐험 보고서 및 홍보 포스터 제작하기";
+
+            // Tab 4
+            document.getElementById('t4-crit-concept').value = "명량해전의 배경과 과정, 이순신 장군의 리더십 및 강강술래·전라우수영성지 문화유산의 특징과 가치를 바르게 이해한다.";
+            document.getElementById('t4-crit-atl').value = "신뢰할 수 있는 우수영 사료를 직접 조사하고 분석하여 핵심 내용과 생각을 보고서로 정리한다.";
+            document.getElementById('t4-crit-action').value = "우리 고장의 문화유산을 홍보하고 보존하기 위한 실천 방안을 제안하고 책임감 있게 참여한다.";
+
+            // Tab 5
+            document.getElementById('t5-student').value = "김OO 학생";
+            document.getElementById('t5-obs').value = "명량해전 조사 보고서 작성 시 우수영성지 관련 사료를 스스로 찾아 출처 정리 잘함. 모둠 활동 시 강강술래 동작 설명할 때 친구들 의견 잘 경청하고 역할을 보조함.";
+
+            showToast("예시 우수영 프로젝트 데이터가 전 영역에 채워졌습니다!");
+        }
+
+        // Toast Alert
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+        }
+
+        // Copy Helper
+        function copyToClipboard(elementId) {
+            const container = document.getElementById(elementId);
+            if (!container || !container.innerText.trim()) return;
+            
+            const range = document.createRange();
+            range.selectNode(container);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+
+            showToast("클립보드에 복사되었습니다!");
+        }
+
+        // Export Element Content to PDF using html2pdf
+        function exportToPDF(elementId, filename) {
+            const element = document.getElementById(elementId);
+            if (!element || !element.innerText.trim()) {
+                showToast("다운로드할 내용이 없습니다. 먼져 내용을 생성해 주세요.");
+                return;
+            }
+
+            const opt = {
+                margin:       10,
+                filename:     `${filename}_${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("PDF 파일을 생성하는 중입니다...");
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast("PDF 다운로드가 완료되었습니다!");
+            });
+        }
+
+        // Export Element Content to Word (.docx) using HTML Blob
+        function exportToWord(elementId, filename) {
+            const element = document.getElementById(elementId);
+            if (!element || !element.innerText.trim()) {
+                showToast("다운로드할 내용이 없습니다. 먼저 내용을 생성해 주세요.");
+                return;
+            }
+
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title><style>body{font-family:'맑은 고딕',Arial,sans-serif;font-size:11pt;line-height:1.6;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #94a3b8;padding:8px;} th{background-color:#f1f5f9;font-weight:bold;}</style></head><body>";
+            const footer = "</body></html>";
+            const html = header + element.innerHTML + footer;
+
+            const blob = new Blob(['\ufeff', html], {
+                type: 'application/msword'
+            });
+
+            saveAs(blob, `${filename}_${new Date().toISOString().slice(0,10)}.doc`);
+            showToast("Word (.doc) 파일이 다운로드되었습니다!");
+        }
+
+        // Direct Rubric Edit Toggle Functionality
+        function toggleEditRubric() {
+            const rubricContainer = document.getElementById('out-rubric');
+            const editBtn = document.getElementById('btn-edit-rubric');
+            const infoBar = document.getElementById('edit-info-bar');
+
+            isRubricEditable = !isRubricEditable;
+
+            if (isRubricEditable) {
+                rubricContainer.contentEditable = "true";
+                rubricContainer.classList.add('editable-active');
+                editBtn.innerHTML = `<i class="fa-solid fa-check"></i> 직접 수정 완료 (저장)`;
+                editBtn.className = "text-xs bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1 px-3 rounded-md shadow transition flex items-center gap-1.5";
+                infoBar.classList.remove('hidden');
+                showToast("수정 모드가 활성화되었습니다. 표 내용을 직접 클릭해 수정하세요.");
+            } else {
+                rubricContainer.contentEditable = "false";
+                rubricContainer.classList.remove('editable-active');
+                editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> 직접 수정 모드 OFF`;
+                editBtn.className = "text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-1 px-3 rounded-md border border-amber-300 transition flex items-center gap-1.5";
+                infoBar.classList.add('hidden');
+                lastGeneratedRubricText = rubricContainer.innerText; // update state
+                showToast("수정이 완료되었습니다!");
+            }
+        }
+
+        // Loading Indicator Helper
+        function setLoading(elementId) {
+            document.getElementById(elementId).innerHTML = `
+                <div class="flex flex-col items-center justify-center h-64 text-indigo-600">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl mb-3"></i>
+                    <p class="text-sm font-semibold animate-pulse">IB 전문 AI가 가독성 높은 내용을 생성 중입니다...</p>
+                </div>
+            `;
+        }
+
+        // Core Generic Call to Gemini API
+        async function callGemini(systemPrompt, userPrompt, outputElementId, successCallback = null) {
+            // Check for API key
+            if (!userApiKey) {
+                openApiKeyModal();
+                showToast("Gemini API 키를 먼저 입력해 주세요.");
+                return;
+            }
+
+            setLoading(outputElementId);
+            
+            const requestUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${userApiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                let response = await fetch(requestUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 400 || response.status === 403) {
+                        throw new Error(`API 키가 올바르지 않거나 권한이 없습니다. (상태 코드: ${response.status})`);
+                    }
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                let result = await response.json();
+                let text = result.candidates?.[0]?.content?.parts?.[0]?.text || "생성 결과를 불러오지 못했습니다.";
+
+                document.getElementById(outputElementId).innerHTML = marked.parse(text);
+
+                if (successCallback) successCallback(text);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById(outputElementId).innerHTML = `
+                    <div class="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm">
+                        <p class="font-bold mb-1"><i class="fa-solid fa-circle-exclamation"></i> API 오류가 발생했습니다.</p>
+                        <p class="text-xs mb-2">${err.message}</p>
+                        <button onclick="openApiKeyModal()" class="text-xs bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg">API 키 다시 설정하기</button>
+                    </div>
+                `;
+            }
+        }
+
+        // ================= TAB 1: INQUIRY QUESTIONS =================
+        function generateQuestions() {
+            const topic = document.getElementById('t1-topic').value || document.getElementById('t1-topic').placeholder;
+            const central = document.getElementById('t1-central').value || document.getElementById('t1-central').placeholder;
+            
+            const selectedKcs = Array.from(document.querySelectorAll('input[name="kc1"]:checked'))
+                                    .map(cb => cb.value).join(', ') || "인과관계(Cause), 관점(Perspective)";
+
+            const systemPrompt = `
+                당신은 IB PYP 개념 기반 탐구 질문 설계 전문가입니다.
+                제시된 단원 주제와 중심 아이디어, 선택된 핵심 개념(${selectedKcs})을 바탕으로 IB 탐구의 3대 질문 유형을 추출하세요.
+
+                [질문 3대 유형]
+                1. 사실적 질문 (Factual Questions): 지식과 사실을 확인하는 질문 (3개)
+                2. 개념적 질문 (Conceptual Questions): 핵심 개념을 통해 깊이 있게 확장하는 질문 (3개)
+                3. 논쟁적/성찰적 질문 (Debatable Questions): 관점과 가치 판단, 실천을 이끌어내는 질문 (3개)
+
+                가독성을 고려해 마크다운 제목, 불릿 포인트를 활용해 깔끔히 출력하세요.
+            `;
+
+            const userPrompt = `
+                - 주제: ${topic}
+                - 중심 아이디어: ${central}
+                - 선택된 핵심 개념: ${selectedKcs}
+            `;
+
+            callGemini(systemPrompt, userPrompt, 'out-q');
+        }
+
+        // ================= TAB 2: DIFFERENTIATED WORKSHEET =================
+        function generateDiffWorksheet() {
+            const topic = document.getElementById('t2-topic').value || document.getElementById('t2-topic').placeholder;
+            const text = document.getElementById('t2-text').value || document.getElementById('t2-text').placeholder;
+            const concept = document.getElementById('t2-concept').value || document.getElementById('t2-concept').placeholder;
+
+            const systemPrompt = `
+                당신은 IB PYP 차별화 수업(Differentiation) 및 포용적 교육 전문가입니다.
+                입력된 탐구 텍스트를 바탕으로 동일한 핵심 개념(${concept})을 유지하면서, 학생들의 읽기 수준에 맞춘 [상·중·하 3단계 차별화 탐구 학습지]를 가공하세요.
+
+                [구성 안내]
+                1. 🟩 [상 레벨] 깊이 있는 탐구형: 원문 맥락 유지, 비판적 사고 질문 및 비교 분석 활동
+                2. 🟦 [중 레벨] 표준 탐구형: 명확한 줄글 요약, 핵심개념 파악 중심 질문
+                3. 🟧 [하 레벨] 친절한 탐구형: 짧은 문장, 핵심 어휘 돋보기(어휘 설명 팁 박스) 포함, 단초형 지원 질문(빈칸/O,X 등)
+            `;
+
+            const userPrompt = `
+                - 탐구 주제: ${topic}
+                - 원문 텍스트: ${text}
+                - 핵심 개념: ${concept}
+            `;
+
+            callGemini(systemPrompt, userPrompt, 'out-diff');
+        }
+
+        // ================= TAB 3: GENERATE RUBRIC =================
+        function generateRubric() {
+            const grade = document.getElementById('t3-grade').value || document.getElementById('t3-grade').placeholder;
+            const theme = document.getElementById('t3-theme').value || document.getElementById('t3-theme').placeholder;
+            const central = document.getElementById('t3-central').value || document.getElementById('t3-central').placeholder;
+            const concepts = document.getElementById('t3-concepts').value || document.getElementById('t3-concepts').placeholder;
+            const atl = document.getElementById('t3-atl').value || document.getElementById('t3-atl').placeholder;
+            const task = document.getElementById('t3-task').value || document.getElementById('t3-task').placeholder;
+
+            const systemPrompt = `
+                당신은 초등학교 IB PYP 평가 및 루브릭 설계 전문 교육 컨설턴트입니다.
+                제시된 단원 정보를 바탕으로 초등학생 발달 수준에 맞춰 4단계 성취 수준 [초과 달성(Exceeding) - 달성(Meeting) - 발전 중(Developing) - 시작 단계(Emerging)]의 교사용 평가 루브릭을 제작하세요.
+                
+                [필수 원칙]
+                1. 평가 기준(Criteria) 3대 축: 
+                   - 개념적 이해 및 지식 (Concept & Knowledge)
+                   - 학습 접근 방법 / 과정·기능 (ATL & Skills)
+                   - 가치·태도 및 실천 (Learner Profile & Action)
+                2. 단원의 실제 어휘(예: 명량해전, 이순신, 강강술래, 우수영성지 등 입력된 어휘)를 반드시 성취 진술어 속에 구체적으로 포함하세요.
+                3. 가독성을 극대화한 마크다운 표(Table)로 출력을 제공하세요.
+            `;
+
+            const userPrompt = `
+                - 학년: ${grade}
+                - 초학문적 주제: ${theme}
+                - 중심 아이디어: ${central}
+                - 명시된 개념: ${concepts}
+                - 주요 ATL: ${atl}
+                - 수행 과제: ${task}
+            `;
+
+            callGemini(systemPrompt, userPrompt, 'out-rubric', (text) => {
+                lastGeneratedRubricText = text;
+                document.getElementById('cta-to-tab4').classList.remove('hidden');
+            });
+        }
+
+        // Transfer Tab 3 Result to Tab 4
+        function transferToTab4() {
+            fetchRubricFromTab3();
+            switchTab('tab4');
+            generateSelfReflect();
+        }
+
+        // Fetch Tab 3 generated Rubric into Tab 4 inputs
+        function fetchRubricFromTab3() {
+            const currentRubricHTML = document.getElementById('out-rubric').innerHTML;
+            if (currentRubricHTML && !currentRubricHTML.includes('fa-clipboard-list')) {
+                document.getElementById('t4-crit-concept').value = "개념 및 지식 평가 기준: 3번 탭 루브릭 표 상단 개념 지표 연동";
+                document.getElementById('t4-crit-atl').value = "ATL 기능 기준: 3번 탭 루브릭 표 중단 탐구/조사/사고 지표 연동";
+                document.getElementById('t4-crit-action').value = "실천 및 태도 기준: 3번 탭 루브릭 표 하단 실천(Action) 및 IB 학습자상 지표 연동";
+                showToast("3번 탭에서 생성/수정된 평가 루브릭을 성공적으로 불러왔습니다!");
+            } else {
+                document.getElementById('t4-crit-concept').value = document.getElementById('t3-central').value || "명량해전의 배경과 과정, 이순신 장군의 리더십 및 문화유산의 특징을 이해한다.";
+                document.getElementById('t4-crit-atl').value = document.getElementById('t3-atl').value || "신뢰할 수 있는 자료를 스스로 조사하여 분석하고 보고서로 작성한다.";
+                document.getElementById('t4-crit-action').value = "지역 문화유산을 홍보하고 보존하기 위한 실천 방안을 제안하고 참여한다.";
+                showToast("기본 단원 정보가 4번 탭 양식에 입력되었습니다.");
+            }
+        }
+
+        // ================= TAB 4: SELF ASSESSMENT =================
+        function generateSelfReflect() {
+            const critConcept = document.getElementById('t4-crit-concept').value || document.getElementById('t4-crit-concept').placeholder;
+            const critAtl = document.getElementById('t4-crit-atl').value || document.getElementById('t4-crit-atl').placeholder;
+            const critAction = document.getElementById('t4-crit-action').value || document.getElementById('t4-crit-action').placeholder;
+            const level = document.getElementById('t4-level').value;
+
+            const systemPrompt = `
+                당신은 IB PYP 초등 학생 중심 평가 전문가입니다.
+                구조화된 3가지 평가 기준(개념/지식, ATL 기능, 실천/학습자상)을 바탕으로 초등학생들이 직접 자기 점검을 할 수 있는 『학생용 '나(I) 문장' 자기평가지』를 제작하세요.
+
+                [작성 가이드라인]
+                - 타겟 수준: ${level}
+                - 모든 성취 항목을 "나는 ~을 할 수 있어요" 혹은 "나는 ~을 하려고 노력했어요" 형태로 작성하세요.
+                - 가독성이 높도록 표(Table) 형태 또는 예쁜 체크리스트로 마크다운을 출력하세요.
+            `;
+
+            const userPrompt = `
+                [평가 기준 입력값]
+                - 개념 및 지식 기준: ${critConcept}
+                - ATL 기능 및 과제 수행 기준: ${critAtl}
+                - 실천 및 태도 기준: ${critAction}
+            `;
+
+            callGemini(systemPrompt, userPrompt, 'out-self');
+        }
+
+        // ================= TAB 5: REPORT COMMENT =================
+        function generateReportComment() {
+            const student = document.getElementById('t5-student').value || document.getElementById('t5-student').placeholder;
+            const obs = document.getElementById('t5-obs').value || document.getElementById('t5-obs').placeholder;
+            const atl = document.getElementById('t5-atl').value;
+            const lp = document.getElementById('t5-lp').value;
+
+            const systemPrompt = `
+                당신은 IB PYP 학생 성장 기록 및 나이스 생활기록부 서술 전문가입니다.
+                교사의 단편적 관찰 메모를 바탕으로 IB의 핵심 요소인 ATL 역량과 IB 학습자상(Learner Profile)이 완벽히 연계된 격식 있고 구체적인 종합 성찰 문장을 작성하세요.
+
+                [작성 요령]
+                1. 학생 이름/식별자: ${student}
+                2. '결과'보다는 탐구 과정에서의 성장, ATL 역량 발현, 학습자상 태도를 명시적으로 서술하세요.
+                3. 초등학교 학교생활기록부/성장기록 양식에 맞춰 자연스러운 서술형 3~4문장 옵션 2가지를 제시하세요.
+            `;
+
+            const userPrompt = `
+                - 관찰 메모: ${obs}
+                - 연계 ATL: ${atl}
+                - 연계 학습자상: ${lp}
+            `;
+
+            callGemini(systemPrompt, userPrompt, 'out-rep');
+        }
+
+        // ================= COMPREHENSIVE ALL-TAB REPORT MODAL =================
+        function openFinalReportModal() {
+            const modal = document.getElementById('report-modal');
+            const body = document.getElementById('modal-report-body');
+
+            const qOut = document.getElementById('out-q').innerHTML;
+            const diffOut = document.getElementById('out-diff').innerHTML;
+            const rubricOut = document.getElementById('out-rubric').innerHTML;
+            const selfOut = document.getElementById('out-self').innerHTML;
+            const repOut = document.getElementById('out-rep').innerHTML;
+
+            const dateStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            body.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem; border-bottom: 3px double #1e3a8a; padding-bottom: 1.5rem;">
+                    <h1 style="font-size: 2rem; color: #1e3a8a; margin-bottom: 0.5rem;">IB PYP 탐구 단원(UOI) 종합 설계 보고서</h1>
+                    <p style="font-size: 0.9rem; color: #475569;">작성일자: ${dateStr} | 작성기관: 우수영초등학교 IB PYP 연구회</p>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">1. 핵심개념 탐구 질문 (Inquiry Questions)</h2>
+                    ${qOut.includes('fa-circle-question') ? '<p style="color:#94a3b8;font-style:italic;">1번 탭의 탐구 질문이 생성되지 않았습니다.</p>' : qOut}
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">2. 수준별 차별화 탐구 학습지 (Differentiation)</h2>
+                    ${diffOut.includes('fa-layer-group') ? '<p style="color:#94a3b8;font-style:italic;">2번 탭의 차별화 학습지가 생성되지 않았습니다.</p>' : diffOut}
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">3. IB 4단계 교사용 평가 루브릭 (Assessment Rubric)</h2>
+                    ${rubricOut.includes('fa-clipboard-list') ? '<p style="color:#94a3b8;font-style:italic;">3번 탭의 루브릭이 생성되지 않았습니다.</p>' : rubricOut}
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">4. 학생용 '나(I) 문장' 자기평가지 (Student Self-Assessment)</h2>
+                    ${selfOut.includes('fa-smile-beam') ? '<p style="color:#94a3b8;font-style:italic;">4번 탭의 자기평가지가 생성되지 않았습니다.</p>' : selfOut}
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">5. 학생 관찰 및 생기부/성장기록 종합의견 (Report Comment)</h2>
+                    ${repOut.includes('fa-pen-fancy') ? '<p style="color:#94a3b8;font-style:italic;">5번 탭의 성장기록문이 생성되지 않았습니다.</p>' : repOut}
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeFinalReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
