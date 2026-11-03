@@ -34,34 +34,13 @@
             padding: 1.5rem;
             border-radius: 0.75rem;
         }
-        .prose table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            background-color: #ffffff;
-        }
-        .prose th, .prose td {
-            border: 1px solid #cbd5e1;
-            padding: 0.85rem 1rem;
-            text-align: left;
-            font-size: 0.9rem;
-            vertical-align: top;
-        }
-        .prose th {
-            background-color: #f1f5f9;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .prose tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-        .prose h1, .prose h2, .prose h3 {
-            color: #0f172a;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
+        
+        /* General Prose Styles */
+        .prose table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; background-color: #ffffff; }
+        .prose th, .prose td { border: 1px solid #cbd5e1; padding: 0.85rem 1rem; text-align: left; font-size: 0.9rem; vertical-align: top; }
+        .prose th { background-color: #f1f5f9; font-weight: 700; color: #0f172a; }
+        .prose tr:nth-child(even) { background-color: #f8fafc; }
+        .prose h1, .prose h2, .prose h3 { color: #0f172a; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; }
         .prose h1 { font-size: 1.5rem; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; }
         .prose h2 { font-size: 1.25rem; color: #1e3a8a; }
         .prose h3 { font-size: 1.1rem; }
@@ -69,7 +48,88 @@
         .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
         .prose p { margin-bottom: 0.85rem; }
 
-        /* ContentEditable visual feedback */
+        /* ==================================================
+           [학습지 전용] 고품질 프린트 스타일 (Worksheet Paper) 
+           ================================================== */
+        .worksheet-paper {
+            background-color: #ffffff;
+            padding: 2.5rem 3rem;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            color: #111827;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        
+        .worksheet-paper h1 {
+            font-size: 2rem;
+            text-align: center;
+            border-bottom: 3px double #1f2937;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        .worksheet-paper h2 {
+            font-size: 1.25rem;
+            border-left: 6px solid #3b82f6;
+            padding-left: 12px;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1e3a8a;
+            background-color: #f0f9ff;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .worksheet-paper blockquote {
+            background-color: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-top: 4px solid #4f46e5;
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .worksheet-paper table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border: 2px solid #94a3b8;
+        }
+
+        .worksheet-paper th, .worksheet-paper td {
+            border: 1px solid #94a3b8;
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .worksheet-paper th {
+            background-color: #e2e8f0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .worksheet-paper ul, .worksheet-paper ol {
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .worksheet-paper li {
+            margin-bottom: 0.5rem;
+        }
+
+        .worksheet-paper input[type="checkbox"] {
+            transform: scale(1.3);
+            margin-right: 0.5rem;
+            accent-color: #2563eb;
+        }
+
         .editable-active [contenteditable="true"] {
             outline: 2px dashed #3b82f6 !important;
             outline-offset: 2px;
@@ -93,8 +153,8 @@
                 </div>
             </div>
             
-            <!-- Quick Preset Selector & Final Report Shortcut -->
             <div class="flex flex-wrap items-center gap-2 bg-indigo-800/80 p-2 rounded-lg border border-indigo-700">
+                <!-- API 키 설정 버튼 (복구됨) -->
                 <button onclick="openApiKeyModal()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white font-bold py-1.5 px-3 rounded shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-key text-amber-400"></i> <span id="key-btn-text">API 키 설정</span>
                 </button>
@@ -119,7 +179,7 @@
                     <i class="fa-solid fa-layer-group"></i> 2. 수준별 탐구 학습지
                 </button>
                 <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
-                    <i class="fa-solid fa-table-list"></i> 3. 평가 루브릭 생성 (편집)
+                    <i class="fa-solid fa-table-list"></i> 3. 평가 루브릭 생성
                 </button>
                 <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn px-4 py-3 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
                     <i class="fa-solid fa-child-reaching"></i> 4. 학생 성찰지 변환
@@ -153,6 +213,10 @@
                     </div>
 
                     <div class="space-y-3">
+                        <div class="bg-indigo-50/50 p-3 rounded-lg border border-indigo-100 mb-2 text-xs text-indigo-700 flex gap-2">
+                            <i class="fa-solid fa-circle-info mt-0.5"></i>
+                            이곳에 입력한 내용은 2번, 3번 탭에 <b>자동으로 연동</b>됩니다.
+                        </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">단원 주제 / 키워드</label>
                             <input type="text" id="t1-topic" placeholder="예: 우수영 역사 문화유산과 이순신의 리더십" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
@@ -164,13 +228,13 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">강조하고 싶은 핵심 개념 (Key Concepts)</label>
                             <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 mt-1">
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="형태(Form)" class="rounded text-indigo-600"> 형태 (Form)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="기능(Function)" class="rounded text-indigo-600"> 기능 (Function)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="인과관계(Cause)" class="rounded text-indigo-600"> 인과관계 (Cause)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="변화(Change)" class="rounded text-indigo-600"> 변화 (Change)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="연결(Connection)" class="rounded text-indigo-600"> 연결 (Connection)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="관점(Perspective)" class="rounded text-indigo-600"> 관점 (Perspective)</label>
-                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="책임(Responsibility)" class="rounded text-indigo-600"> 책임 (Responsibility)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="형태(Form)" class="kc-check rounded text-indigo-600"> 형태 (Form)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="기능(Function)" class="kc-check rounded text-indigo-600"> 기능 (Function)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="인과관계(Cause)" class="kc-check rounded text-indigo-600"> 인과관계 (Cause)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="변화(Change)" class="kc-check rounded text-indigo-600"> 변화 (Change)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="연결(Connection)" class="kc-check rounded text-indigo-600"> 연결 (Connection)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="관점(Perspective)" class="kc-check rounded text-indigo-600"> 관점 (Perspective)</label>
+                                <label class="flex items-center gap-1.5"><input type="checkbox" name="kc1" value="책임(Responsibility)" class="kc-check rounded text-indigo-600"> 책임 (Responsibility)</label>
                             </div>
                         </div>
                     </div>
@@ -224,21 +288,21 @@
 
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">탐구 주제 / 영역</label>
-                            <input type="text" id="t2-topic" placeholder="예: 명량해전 당시 울돌목의 지형과 이순신 장군의 리더십" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">탐구 주제 / 영역 (1번 탭 연동)</label>
+                            <input type="text" id="t2-topic" placeholder="예: 명량해전 당시 울돌목의 지형과 이순신 장군의 리더십" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">원문 텍스트 (사료/해설문/기사 등)</label>
                             <textarea id="t2-text" rows="8" placeholder="예: 전라우수영은 조선 시대 전라도 수군을 총괄하던 해군 기지이다. 특히 울돌목은 폭이 좁고 물살이 몹시 거세어 거대한 배도 중심을 잡기 어려운 천혜의 요새였다. 이순신 장군은 13척의 적은 배로 133척의 왜선을 상대할 때, 울돌목의 좁은 지형과 하루에 네 번 바뀌는 조류를 철저히 계산하여 명량대첩을 승리로 이끌었다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">연계 IB 핵심 개념 (Key Concepts)</label>
-                            <input type="text" id="t2-concept" placeholder="예: 인과관계(Cause), 형태(Form)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">연계 IB 핵심 개념 (1번 탭 연동)</label>
+                            <input type="text" id="t2-concept" placeholder="예: 인과관계(Cause), 형태(Form)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
                         </div>
                     </div>
 
                     <button onclick="generateDiffWorksheet()" id="btn-gen-diff" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 상/중/하 3단계 차별화 학습지 가공
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 상/중/하 3단계 실전 학습지 생성
                     </button>
                 </div>
 
@@ -247,21 +311,21 @@
                     <div>
                         <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
                             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-cubes text-emerald-600"></i> 수준별 탐구 학습지 (상·중·하)
+                                <i class="fa-solid fa-print text-emerald-600"></i> 수준별 탐구 학습지 (상·중·하)
                             </h3>
                             <div class="flex items-center gap-1.5">
                                 <button onclick="copyToClipboard('out-diff')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
                                     <i class="fa-regular fa-copy"></i> 복사
                                 </button>
                                 <button onclick="exportToPDF('out-diff', '수준별_탐구학습지')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                    <i class="fa-solid fa-file-pdf"></i> PDF 인쇄
                                 </button>
                                 <button onclick="exportToWord('out-diff', '수준별_탐구학습지')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-word"></i> Word
+                                    <i class="fa-solid fa-file-word"></i> Word 다운
                                 </button>
                             </div>
                         </div>
-                        <div id="out-diff" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                        <div id="out-diff" class="worksheet-paper prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
                             <div class="flex flex-col items-center justify-center h-64 text-slate-400">
                                 <i class="fa-solid fa-layer-group text-4xl mb-3"></i>
                                 <p class="text-sm">원문 입력 후 차별화 학습지 가공 버튼을 눌러주세요.</p>
@@ -272,7 +336,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 3: RUBRIC GENERATOR & EDITABLE ================= -->
+        <!-- ================= TAB 3: RUBRIC GENERATOR ================= -->
         <div id="tab3" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- Input Panel -->
@@ -294,12 +358,12 @@
                             <input type="text" id="t3-theme" placeholder="예: 우리가 서 있는 시간과 공간 (Where we are in place and time)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">중심 아이디어 (Central Idea)</label>
-                            <textarea id="t3-central" rows="2" placeholder="예: 지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식과 지역 정체성에 깊은 영향을 미친다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">중심 아이디어 (1번 탭 연동)</label>
+                            <textarea id="t3-central" rows="2" placeholder="예: 지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식과 지역 정체성에 깊은 영향을 미친다." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">명시된 개념 (Key Concepts)</label>
-                            <input type="text" id="t3-concepts" placeholder="예: 인과관계(Cause), 관점(Perspective), 책임(Responsibility)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">명시된 개념 (1번 탭 연동)</label>
+                            <input type="text" id="t3-concepts" placeholder="예: 인과관계(Cause), 관점(Perspective), 책임(Responsibility)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">주요 ATL 역량 (Approaches to Learning)</label>
@@ -316,7 +380,7 @@
                     </button>
                 </div>
 
-                <!-- Output Panel with DIRECT EDIT TOGGLE -->
+                <!-- Output Panel -->
                 <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between min-h-[550px]">
                     <div>
                         <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
@@ -324,7 +388,6 @@
                                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                                     <i class="fa-solid fa-file-contract text-emerald-600"></i> 생성된 교사용 루브릭
                                 </h3>
-                                <!-- Direct Edit Toggle Button -->
                                 <button onclick="toggleEditRubric()" id="btn-edit-rubric" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-1 px-3 rounded-md border border-amber-300 transition flex items-center gap-1.5">
                                     <i class="fa-solid fa-pen-to-square"></i> 직접 수정 모드 OFF
                                 </button>
@@ -342,7 +405,6 @@
                             </div>
                         </div>
 
-                        <!-- Info Banner for Editing -->
                         <div id="edit-info-bar" class="hidden mb-3 p-2.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg text-xs flex items-center gap-2">
                             <i class="fa-solid fa-circle-info text-blue-600"></i>
                             <span>수정 모드가 켜졌습니다. 아래 표의 칸이나 글자를 마우스로 직접 클릭하여 자유롭게 수정해 보세요!</span>
@@ -356,7 +418,6 @@
                         </div>
                     </div>
                     
-                    <!-- Bottom Next Step CTA -->
                     <div id="cta-to-tab4" class="hidden mt-6 pt-4 border-t border-slate-100 bg-amber-50 p-4 rounded-xl border border-amber-200 flex flex-col sm:flex-row justify-between items-center gap-3">
                         <div class="text-xs text-amber-900">
                             <span class="font-bold">💡 다음 추천 단계:</span> 생성 및 수정된 루브릭을 바탕으로 학생용 '나(I) 문장' 자기평가지를 생성하시겠습니까?
@@ -383,7 +444,6 @@
                         </button>
                     </div>
 
-                    <!-- Structured Rubric Inputs -->
                     <div class="space-y-3">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1. 개념 및 지식 기준 (Criteria 1)</label>
@@ -408,7 +468,7 @@
                     </div>
 
                     <button onclick="generateSelfReflect()" id="btn-gen-self" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> '나(I) 문장' 자기평가지 생성
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 실전용 성찰지 / 자기평가지 생성
                     </button>
                 </div>
 
@@ -417,21 +477,21 @@
                     <div>
                         <div class="border-b border-slate-100 pb-3 flex flex-wrap justify-between items-center gap-2 mb-4">
                             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-clipboard-check text-emerald-600"></i> 학생용 성찰 및 자기평가지
+                                <i class="fa-solid fa-print text-emerald-600"></i> 학생용 성찰 및 자기평가지
                             </h3>
                             <div class="flex items-center gap-1.5">
                                 <button onclick="copyToClipboard('out-self')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 transition flex items-center gap-1">
                                     <i class="fa-regular fa-copy"></i> 복사
                                 </button>
                                 <button onclick="exportToPDF('out-self', '학생용_자기평가지')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 px-2.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                    <i class="fa-solid fa-file-pdf"></i> PDF 인쇄
                                 </button>
                                 <button onclick="exportToWord('out-self', '학생용_자기평가지')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-1.5 px-2.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-word"></i> Word
+                                    <i class="fa-solid fa-file-word"></i> Word 다운
                                 </button>
                             </div>
                         </div>
-                        <div id="out-self" class="export-container prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
+                        <div id="out-self" class="worksheet-paper prose max-w-none text-slate-700 text-sm overflow-x-auto min-h-[350px]">
                             <div class="flex flex-col items-center justify-center h-64 text-slate-400">
                                 <i class="fa-solid fa-smile-beam text-4xl mb-3"></i>
                                 <p class="text-sm">루브릭 기준 작성 또는 불러오기 후 생성 버튼을 눌러주세요.</p>
@@ -442,7 +502,7 @@
             </div>
         </div>
 
-        <!-- ================= TAB 5: REPORT & FULL COMPREHENSIVE DOC ================= -->
+        <!-- ================= TAB 5: REPORT ================= -->
         <div id="tab5" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- Input Panel -->
@@ -489,7 +549,6 @@
                         <i class="fa-solid fa-wand-magic-sparkles"></i> 개별 학생 나이스 종합의견 생성
                     </button>
 
-                    <!-- COMPREHENSIVE REPORT GENERATOR BUTTON -->
                     <div class="pt-4 border-t border-slate-200">
                         <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200">
                             <h4 class="text-xs font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
@@ -563,7 +622,7 @@
         </div>
     </div>
 
-    <!-- API KEY INPUT MODAL -->
+    <!-- API KEY INPUT MODAL (복구됨) -->
     <div id="apikey-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
             <div class="bg-indigo-900 text-white p-4 flex justify-between items-center">
@@ -576,46 +635,59 @@
             </div>
             <div class="p-5 space-y-4">
                 <p class="text-xs text-slate-600 leading-relaxed">
-                    로컬 컴퓨터에서 AI 생성 기능을 이용하려면 **Google Gemini API Key**가 필요합니다.<br>
-                    입력하신 키는 서버로 전송되지 않고 선생님의 브라우저에만 안전하게 저장됩니다.
+                    AI 생성 기능을 이용하려면 <b>Google Gemini API 키</b>가 필요합니다.<br>
+                    키는 이 기기의 브라우저에만 저장되며(Google 서버 외에는 전송되지 않음), 기기를 바꾸면 새로 입력해야 합니다.
                 </p>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Gemini API Key</label>
                     <input type="password" id="input-api-key" placeholder="AIzaSy..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
+                <div id="apikey-status" class="hidden text-xs p-2.5 rounded-lg border"></div>
                 <div class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
                     💡 API 키가 없으신가요? 
                     <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 font-bold underline">Google AI Studio</a>에서 발급받으실 수 있습니다.
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button onclick="closeApiKeyModal()" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">취소</button>
-                    <button onclick="saveApiKey()" class="px-4 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow">저장하기</button>
+                    <button id="apikey-save-btn" onclick="saveApiKey()" class="px-4 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow">연결 확인 후 저장</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
-        <p>IB PYP 교사 지원 스마트 툴킷 · Powered by Gemini API · 우수영초등학교 특색교육 및 IB PYP 연계</p>
-    </footer>
-
-    <!-- Logic JavaScript -->
+    <!-- Script Area -->
     <script>
-        // API Key handling
+        // =========================================================
+        // [복구됨] API Key 모달 관련 함수
+        // =========================================================
+        const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+        // 모델 이름은 Google이 자주 바꾸므로 고정하지 않고, 키로 사용 가능한 모델을 조회해 자동 선택합니다.
+        const PREFERRED_MODELS = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+        const EXCLUDED_MODEL_PATTERN = /(tts|image|live|embedding|robotics|omni|audio|computer-use|native|translate|imagen|veo|lyria)/;
+
         let userApiKey = localStorage.getItem('gemini_api_key') || "";
+        let userModel = localStorage.getItem('gemini_model') || "";
 
         function checkApiKeyStatus() {
             const btnText = document.getElementById('key-btn-text');
-            if (userApiKey) {
-                btnText.innerText = "API 키 저장됨";
-            } else {
-                btnText.innerText = "API 키 설정";
-            }
+            btnText.innerText = userApiKey ? "API 키 저장됨" : "API 키 설정";
+        }
+
+        function setApiKeyStatus(type, message) {
+            const el = document.getElementById('apikey-status');
+            if (!type) { el.classList.add('hidden'); return; }
+            const styles = {
+                info: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+                ok: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+                error: 'bg-rose-50 border-rose-200 text-rose-700'
+            };
+            el.className = 'text-xs p-2.5 rounded-lg border break-all ' + styles[type];
+            el.textContent = message;
         }
 
         function openApiKeyModal() {
             document.getElementById('input-api-key').value = userApiKey;
+            setApiKeyStatus(null);
             document.getElementById('apikey-modal').classList.remove('hidden');
         }
 
@@ -623,74 +695,174 @@
             document.getElementById('apikey-modal').classList.add('hidden');
         }
 
-        function saveApiKey() {
+        // Gemini 오류를 선생님이 이해하기 쉬운 문장으로 변환
+        function explainGeminiError(status, message) {
+            const msg = message || '';
+            if (status === 400 && /api key|API_KEY_INVALID/i.test(msg)) return 'API 키가 올바르지 않습니다. 복사할 때 앞뒤 공백이나 누락된 글자가 없는지 확인해 주세요.';
+            if (status === 403) return 'API 키 권한 문제입니다. Google AI Studio에서 키가 활성 상태인지, 사용 제한(허용 사이트 등)이 걸려 있지 않은지 확인해 주세요.';
+            if (status === 404) return '선택된 AI 모델을 사용할 수 없습니다. (모델이 종료되었을 수 있어 자동으로 다시 찾아봅니다)';
+            if (status === 429) return '무료 사용량(분당/일일)을 초과했습니다. 잠시 후 다시 시도하거나 다른 키를 사용해 주세요.';
+            if (status === 503 || status === 500) return 'Google 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.';
+            return msg || '알 수 없는 오류';
+        }
+
+        // 이 키로 실제 사용 가능한 텍스트 생성 모델 목록 조회 (키 검증도 겸함)
+        async function listAvailableModels(key) {
+            let res;
+            try {
+                res = await fetch(`${GEMINI_BASE}/models?pageSize=1000`, { headers: { 'x-goog-api-key': key } });
+            } catch (e) {
+                throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해 주세요.');
+            }
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(explainGeminiError(res.status, err.error?.message));
+            }
+            const data = await res.json();
+            return (data.models || [])
+                .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
+                .map(m => m.name.replace(/^models\//, ''))
+                .filter(n => /^gemini-/.test(n) && !EXCLUDED_MODEL_PATTERN.test(n));
+        }
+
+        function pickBestModel(list) {
+            for (const name of PREFERRED_MODELS) if (list.includes(name)) return name;
+            const flash = list.filter(n => /flash/.test(n) && !/lite/.test(n)).sort().reverse();
+            return flash[0] || list.slice().sort().reverse()[0] || '';
+        }
+
+        async function detectModel(key) {
+            const list = await listAvailableModels(key);
+            const best = pickBestModel(list);
+            if (!best) throw new Error('이 API 키로 사용할 수 있는 Gemini 모델을 찾지 못했습니다.');
+            userModel = best;
+            localStorage.setItem('gemini_model', best);
+            return best;
+        }
+
+        // 혼잡(503)·한도(429)·종료(404) 시 순서대로 시도할 모델 후보 목록
+        function buildModelCandidates(list) {
+            const out = PREFERRED_MODELS.filter(n => list.includes(n));
+            const rest = list.filter(n => !out.includes(n));
+            const flash = rest.filter(n => /flash/.test(n)).sort().reverse();
+            const others = rest.filter(n => !/flash/.test(n)).sort().reverse();
+            return [...out, ...flash, ...others];
+        }
+
+        const FALLBACK_STATUSES = [404, 429, 500, 503];
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+        // 같은 모델에 한 번만 잠깐 기다렸다가 재시도(일시적 혼잡 대비)
+        async function requestWithRetry(model, payload) {
+            try {
+                return await requestGemini(model, payload);
+            } catch (err) {
+                if (err.status === 503 || err.status === 500) {
+                    await sleep(1500);
+                    return await requestGemini(model, payload);
+                }
+                throw err;
+            }
+        }
+
+        async function saveApiKey() {
             const val = document.getElementById('input-api-key').value.trim();
-            if (val) {
+            if (!val) {
+                userApiKey = ""; userModel = "";
+                localStorage.removeItem('gemini_api_key');
+                localStorage.removeItem('gemini_model');
+                showToast("API 키가 삭제되었습니다.");
+                checkApiKeyStatus();
+                closeApiKeyModal();
+                return;
+            }
+            const btn = document.getElementById('apikey-save-btn');
+            btn.disabled = true; btn.classList.add('opacity-60');
+            setApiKeyStatus('info', '키를 확인하는 중입니다...');
+            try {
+                const model = await detectModel(val);
                 userApiKey = val;
                 localStorage.setItem('gemini_api_key', val);
-                showToast("API 키가 안전하게 저장되었습니다.");
-            } else {
-                userApiKey = "";
-                localStorage.removeItem('gemini_api_key');
-                showToast("API 키가 삭제되었습니다.");
+                setApiKeyStatus('ok', `연결 성공! 사용 모델: ${model}`);
+                showToast("API 키가 이 기기에 저장되었습니다.");
+                checkApiKeyStatus();
+                setTimeout(closeApiKeyModal, 900);
+            } catch (err) {
+                setApiKeyStatus('error', '저장하지 않았습니다. ' + err.message);
+            } finally {
+                btn.disabled = false; btn.classList.remove('opacity-60');
             }
-            checkApiKeyStatus();
-            closeApiKeyModal();
+        }
+
+        // =========================================================
+        // [신규 기능] 1번 탭 입력 데이터를 2, 3번 탭으로 자동 연동(Sync)
+        // =========================================================
+        function setupDataSync() {
+            const t1Topic = document.getElementById('t1-topic');
+            const t1Central = document.getElementById('t1-central');
+            const kcCheckboxes = document.querySelectorAll('.kc-check');
+
+            t1Topic.addEventListener('input', () => {
+                document.getElementById('t2-topic').value = t1Topic.value;
+            });
+            t1Central.addEventListener('input', () => {
+                document.getElementById('t3-central').value = t1Central.value;
+            });
+            kcCheckboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const selectedKcs = Array.from(document.querySelectorAll('.kc-check:checked'))
+                                             .map(c => c.value).join(', ');
+                    document.getElementById('t2-concept').value = selectedKcs;
+                    document.getElementById('t3-concepts').value = selectedKcs;
+                });
+            });
         }
 
         // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
             checkApiKeyStatus();
+            setupDataSync(); 
         });
 
         // Global State Store
         let lastGeneratedRubricText = "";
         let isRubricEditable = false;
 
-        // Tab Switcher
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(tabId).classList.remove('hidden');
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        // Preset Sample Loader for fast testing
         function loadSampleData() {
-            // Tab 1
             document.getElementById('t1-topic').value = "우수영 역사 문화유산과 이순신의 리더십";
             document.getElementById('t1-central').value = "지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식에 영향을 준다.";
-            document.querySelectorAll('input[name="kc1"]').forEach(cb => {
+            document.querySelectorAll('.kc-check').forEach(cb => {
                 if (["인과관계(Cause)", "관점(Perspective)", "책임(Responsibility)"].includes(cb.value)) cb.checked = true;
+                else cb.checked = false;
             });
+            document.getElementById('t1-topic').dispatchEvent(new Event('input'));
+            document.getElementById('t1-central').dispatchEvent(new Event('input'));
+            document.querySelector('.kc-check').dispatchEvent(new Event('change'));
 
-            // Tab 2
-            document.getElementById('t2-topic').value = "명량해전 당시 울돌목의 지형과 이순신 장군의 리더십";
             document.getElementById('t2-text').value = "전라우수영은 조선 시대 전라도 수군을 총괄하던 해군 기지이다. 특히 울돌목은 폭이 좁고 물살이 몹시 거세어 거대한 배도 중심을 잡기 어려운 천혜의 요새였다. 이순신 장군은 13척의 적은 배로 133척의 왜선을 상대할 때, 울돌목의 좁은 지형과 하루에 네 번 바뀌는 조류(물살의 방향)를 철저히 계산하여 명량대첩을 승리로 이끌었다.";
-            document.getElementById('t2-concept').value = "인과관계(Cause), 형태(Form)";
 
-            // Tab 3
             document.getElementById('t3-grade').value = "초등 4학년 2학기";
             document.getElementById('t3-theme').value = "우리가 서 있는 시간과 공간 (Where we are in place and time)";
-            document.getElementById('t3-central').value = "지역사회의 역사적 사건과 문화유산은 오늘날 우리 삶의 방식과 지역 정체성에 깊은 영향을 미친다.";
-            document.getElementById('t3-concepts').value = "인과관계(Cause), 관점(Perspective), 책임(Responsibility)";
             document.getElementById('t3-atl').value = "사고 기능(비판적 사고), 조사 기능(자료 분석), 의사소통 기능(보고서 작성)";
             document.getElementById('t3-task').value = "'우수영 마을 탐험대'가 되어 명량해전과 지역 문화유산(강강술래, 전라우수영성지)을 조사하고 탐험 보고서 및 홍보 포스터 제작하기";
 
-            // Tab 4
             document.getElementById('t4-crit-concept').value = "명량해전의 배경과 과정, 이순신 장군의 리더십 및 강강술래·전라우수영성지 문화유산의 특징과 가치를 바르게 이해한다.";
             document.getElementById('t4-crit-atl').value = "신뢰할 수 있는 우수영 사료를 직접 조사하고 분석하여 핵심 내용과 생각을 보고서로 정리한다.";
             document.getElementById('t4-crit-action').value = "우리 고장의 문화유산을 홍보하고 보존하기 위한 실천 방안을 제안하고 책임감 있게 참여한다.";
 
-            // Tab 5
             document.getElementById('t5-student').value = "김OO 학생";
             document.getElementById('t5-obs').value = "명량해전 조사 보고서 작성 시 우수영성지 관련 사료를 스스로 찾아 출처 정리 잘함. 모둠 활동 시 강강술래 동작 설명할 때 친구들 의견 잘 경청하고 역할을 보조함.";
 
-            showToast("예시 우수영 프로젝트 데이터가 전 영역에 채워졌습니다!");
+            showToast("예시 데이터가 전 영역에 채워졌으며 연동되었습니다!");
         }
 
-        // Toast Alert
         function showToast(message) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = message;
@@ -698,368 +870,279 @@
             setTimeout(() => { toast.classList.add('hidden'); }, 3000);
         }
 
-        // Copy Helper
         function copyToClipboard(elementId) {
             const container = document.getElementById(elementId);
             if (!container || !container.innerText.trim()) return;
-            
             const range = document.createRange();
             range.selectNode(container);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
             document.execCommand('copy');
             window.getSelection().removeAllRanges();
-
             showToast("클립보드에 복사되었습니다!");
         }
 
-        // Export Element Content to PDF using html2pdf
         function exportToPDF(elementId, filename) {
             const element = document.getElementById(elementId);
-            if (!element || !element.innerText.trim()) {
-                showToast("다운로드할 내용이 없습니다. 먼져 내용을 생성해 주세요.");
-                return;
-            }
-
+            if (!element || !element.innerText.trim()) { showToast("다운로드할 내용이 없습니다."); return; }
             const opt = {
-                margin:       10,
+                margin:       15,
                 filename:     `${filename}_${new Date().toISOString().slice(0,10)}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-
             showToast("PDF 파일을 생성하는 중입니다...");
-            html2pdf().set(opt).from(element).save().then(() => {
-                showToast("PDF 다운로드가 완료되었습니다!");
-            });
+            html2pdf().set(opt).from(element).save().then(() => showToast("PDF 다운로드 완료!"));
         }
 
-        // Export Element Content to Word (.docx) using HTML Blob
         function exportToWord(elementId, filename) {
             const element = document.getElementById(elementId);
-            if (!element || !element.innerText.trim()) {
-                showToast("다운로드할 내용이 없습니다. 먼저 내용을 생성해 주세요.");
-                return;
-            }
-
-            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title><style>body{font-family:'맑은 고딕',Arial,sans-serif;font-size:11pt;line-height:1.6;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #94a3b8;padding:8px;} th{background-color:#f1f5f9;font-weight:bold;}</style></head><body>";
+            if (!element || !element.innerText.trim()) { showToast("다운로드할 내용이 없습니다."); return; }
+            const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title><style>
+            body{font-family:'맑은 고딕',Arial,sans-serif;font-size:11pt;line-height:1.6;} 
+            h1{text-align:center; font-size:24pt; border-bottom:2px solid #000; padding-bottom:10px;}
+            h2{font-size:14pt; margin-top:20px; border-left:4px solid #3b82f6; padding-left:8px; background-color:#f0f9ff;}
+            blockquote{background-color:#f8fafc; border:1px solid #cbd5e1; padding:15px; margin:15px 0;}
+            table{width:100%; border-collapse:collapse; margin-bottom:15px; border:1px solid #94a3b8;} 
+            th,td{border:1px solid #94a3b8; padding:10px;} th{background-color:#f1f5f9; font-weight:bold;}
+            .student-info{text-align:right; font-weight:bold; font-size:12pt; margin-bottom:20px;}
+            </style></head><body>`;
             const footer = "</body></html>";
-            const html = header + element.innerHTML + footer;
-
-            const blob = new Blob(['\ufeff', html], {
-                type: 'application/msword'
-            });
-
+            let htmlContent = element.innerHTML;
+            htmlContent = htmlContent.replace(/<input type="checkbox"[^>]*>/g, "☐ ");
+            const html = header + htmlContent + footer;
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
             saveAs(blob, `${filename}_${new Date().toISOString().slice(0,10)}.doc`);
             showToast("Word (.doc) 파일이 다운로드되었습니다!");
         }
 
-        // Direct Rubric Edit Toggle Functionality
         function toggleEditRubric() {
             const rubricContainer = document.getElementById('out-rubric');
             const editBtn = document.getElementById('btn-edit-rubric');
             const infoBar = document.getElementById('edit-info-bar');
-
             isRubricEditable = !isRubricEditable;
-
             if (isRubricEditable) {
                 rubricContainer.contentEditable = "true";
                 rubricContainer.classList.add('editable-active');
                 editBtn.innerHTML = `<i class="fa-solid fa-check"></i> 직접 수정 완료 (저장)`;
                 editBtn.className = "text-xs bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1 px-3 rounded-md shadow transition flex items-center gap-1.5";
                 infoBar.classList.remove('hidden');
-                showToast("수정 모드가 활성화되었습니다. 표 내용을 직접 클릭해 수정하세요.");
+                showToast("수정 모드가 활성화되었습니다.");
             } else {
                 rubricContainer.contentEditable = "false";
                 rubricContainer.classList.remove('editable-active');
                 editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> 직접 수정 모드 OFF`;
                 editBtn.className = "text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-1 px-3 rounded-md border border-amber-300 transition flex items-center gap-1.5";
                 infoBar.classList.add('hidden');
-                lastGeneratedRubricText = rubricContainer.innerText; // update state
+                lastGeneratedRubricText = rubricContainer.innerText; 
                 showToast("수정이 완료되었습니다!");
             }
         }
 
-        // Loading Indicator Helper
         function setLoading(elementId) {
             document.getElementById(elementId).innerHTML = `
                 <div class="flex flex-col items-center justify-center h-64 text-indigo-600">
                     <i class="fa-solid fa-spinner fa-spin text-4xl mb-3"></i>
-                    <p class="text-sm font-semibold animate-pulse">IB 전문 AI가 가독성 높은 내용을 생성 중입니다...</p>
+                    <p class="text-sm font-semibold animate-pulse">AI가 고품질의 양식을 생성 중입니다...</p>
                 </div>
             `;
         }
 
-        // Core Generic Call to Gemini API
-        async function callGemini(systemPrompt, userPrompt, outputElementId, successCallback = null) {
-            // Check for API key
-            if (!userApiKey) {
-                openApiKeyModal();
-                showToast("Gemini API 키를 먼저 입력해 주세요.");
-                return;
+        // =========================================================
+        // Gemini 호출: 모델 자동 선택 + 모델 종료(404) 시 자동 재탐색
+        // =========================================================
+        async function requestGemini(model, payload) {
+            let response;
+            try {
+                response = await fetch(`${GEMINI_BASE}/models/${model}:generateContent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': userApiKey },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                throw Object.assign(new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해 주세요.'), { status: 0 });
             }
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw Object.assign(new Error(explainGeminiError(response.status, errData.error?.message)), { status: response.status });
+            }
+            return response.json();
+        }
 
+        async function callGemini(systemPrompt, userPrompt, outputElementId, successCallback = null) {
+            if (!userApiKey) { openApiKeyModal(); showToast("Gemini API 키를 먼저 입력해 주세요."); return; }
             setLoading(outputElementId);
-            
-            const requestUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${userApiKey}`;
 
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: { temperature: 0.7 }
             };
 
             try {
-                let response = await fetch(requestUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                let result = null, lastErr = null, expanded = false;
+                const tried = [];
+                let queue = userModel ? [userModel] : [];
 
-                if (!response.ok) {
-                    if (response.status === 400 || response.status === 403) {
-                        throw new Error(`API 키가 올바르지 않거나 권한이 없습니다. (상태 코드: ${response.status})`);
+                while (!result) {
+                    let model = queue.shift();
+                    if (!model) {
+                        if (expanded) break;
+                        expanded = true;
+                        // 사용 가능한 모델 목록을 조회해 아직 시도하지 않은 모델을 최대 6개까지 후보로 추가
+                        const list = await listAvailableModels(userApiKey);
+                        queue = buildModelCandidates(list).filter(n => !tried.includes(n)).slice(0, 6);
+                        continue;
                     }
-                    throw new Error(`API Error: ${response.status}`);
+                    tried.push(model);
+                    try {
+                        result = await requestWithRetry(model, payload);
+                        userModel = model; // 이번 접속 동안은 응답에 성공한 모델을 우선 사용
+                    } catch (err) {
+                        lastErr = err;
+                        if (!FALLBACK_STATUSES.includes(err.status)) throw err;
+                    }
                 }
 
-                let result = await response.json();
-                let text = result.candidates?.[0]?.content?.parts?.[0]?.text || "생성 결과를 불러오지 못했습니다.";
+                if (!result) {
+                    throw new Error(`시도한 모델(${tried.join(', ')})이 모두 응답하지 못했습니다. 마지막 사유: ${lastErr ? lastErr.message : '알 수 없음'} 몇 분 뒤 다시 시도해 주세요.`);
+                }
 
-                document.getElementById(outputElementId).innerHTML = marked.parse(text);
+                const parts = result.candidates?.[0]?.content?.parts || [];
+                let text = parts.filter(p => p.text && !p.thought).map(p => p.text).join('\n').trim();
+                if (!text) {
+                    const reason = result.promptFeedback?.blockReason || result.candidates?.[0]?.finishReason;
+                    text = reason ? `생성 결과를 불러오지 못했습니다. (사유: ${reason})` : "생성 결과를 불러오지 못했습니다.";
+                }
 
+                // marked 버전에 관계없이 동작하도록, 렌더러 대신 변환된 HTML을 후처리해 체크박스 목록을 꾸밉니다.
+                let html = marked.parse(text);
+                html = html
+                    .replace(/<li>(\s*(?:<p>)?)\[ \]\s*/g, '<li style="list-style:none; margin-left:-1.5rem;">$1<input type="checkbox" disabled> ')
+                    .replace(/<li>(\s*(?:<p>)?)\[x\]\s*/gi, '<li style="list-style:none; margin-left:-1.5rem;">$1<input type="checkbox" checked disabled> ')
+                    .replace(/<li>(\s*(?:<p>)?\s*<input[^>]*type="checkbox")/g, '<li style="list-style:none; margin-left:-1.5rem;">$1');
+                document.getElementById(outputElementId).innerHTML = html;
                 if (successCallback) successCallback(text);
-
             } catch (err) {
                 console.error(err);
                 document.getElementById(outputElementId).innerHTML = `
                     <div class="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm">
-                        <p class="font-bold mb-1"><i class="fa-solid fa-circle-exclamation"></i> API 오류가 발생했습니다.</p>
-                        <p class="text-xs mb-2">${err.message}</p>
-                        <button onclick="openApiKeyModal()" class="text-xs bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg">API 키 다시 설정하기</button>
+                        <p class="font-bold mb-1"><i class="fa-solid fa-circle-exclamation"></i> API 호출 중 오류가 발생했습니다.</p>
+                        <p class="text-xs mb-2 break-all"></p>
+                        <button onclick="openApiKeyModal()" class="text-xs bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg">API 키 확인하기</button>
                     </div>
                 `;
+                document.querySelector(`#${outputElementId} p.break-all`).textContent = err.message;
             }
         }
 
-        // ================= TAB 1: INQUIRY QUESTIONS =================
+        // ================= TAB 1 =================
         function generateQuestions() {
-            const topic = document.getElementById('t1-topic').value || document.getElementById('t1-topic').placeholder;
-            const central = document.getElementById('t1-central').value || document.getElementById('t1-central').placeholder;
-            
-            const selectedKcs = Array.from(document.querySelectorAll('input[name="kc1"]:checked'))
-                                    .map(cb => cb.value).join(', ') || "인과관계(Cause), 관점(Perspective)";
-
-            const systemPrompt = `
-                당신은 IB PYP 개념 기반 탐구 질문 설계 전문가입니다.
-                제시된 단원 주제와 중심 아이디어, 선택된 핵심 개념(${selectedKcs})을 바탕으로 IB 탐구의 3대 질문 유형을 추출하세요.
-
-                [질문 3대 유형]
-                1. 사실적 질문 (Factual Questions): 지식과 사실을 확인하는 질문 (3개)
-                2. 개념적 질문 (Conceptual Questions): 핵심 개념을 통해 깊이 있게 확장하는 질문 (3개)
-                3. 논쟁적/성찰적 질문 (Debatable Questions): 관점과 가치 판단, 실천을 이끌어내는 질문 (3개)
-
-                가독성을 고려해 마크다운 제목, 불릿 포인트를 활용해 깔끔히 출력하세요.
-            `;
-
-            const userPrompt = `
-                - 주제: ${topic}
-                - 중심 아이디어: ${central}
-                - 선택된 핵심 개념: ${selectedKcs}
-            `;
-
+            const topic = document.getElementById('t1-topic').value;
+            const central = document.getElementById('t1-central').value;
+            const selectedKcs = Array.from(document.querySelectorAll('.kc-check:checked')).map(cb => cb.value).join(', ');
+            const systemPrompt = `당신은 IB PYP 탐구 질문 설계 전문가입니다. 제시된 단원 주제와 중심 아이디어, 핵심 개념(${selectedKcs})을 바탕으로 Factual, Conceptual, Debatable 질문을 3개씩 추출하세요. 마크다운으로 깔끔하게 정리하세요.`;
+            const userPrompt = `- 주제: ${topic}\n- 중심 아이디어: ${central}\n- 선택된 핵심 개념: ${selectedKcs}`;
             callGemini(systemPrompt, userPrompt, 'out-q');
         }
 
-        // ================= TAB 2: DIFFERENTIATED WORKSHEET =================
+        // ================= TAB 2 =================
         function generateDiffWorksheet() {
-            const topic = document.getElementById('t2-topic').value || document.getElementById('t2-topic').placeholder;
-            const text = document.getElementById('t2-text').value || document.getElementById('t2-text').placeholder;
-            const concept = document.getElementById('t2-concept').value || document.getElementById('t2-concept').placeholder;
-
+            const topic = document.getElementById('t2-topic').value;
+            const text = document.getElementById('t2-text').value;
+            const concept = document.getElementById('t2-concept').value;
             const systemPrompt = `
-                당신은 IB PYP 차별화 수업(Differentiation) 및 포용적 교육 전문가입니다.
-                입력된 탐구 텍스트를 바탕으로 동일한 핵심 개념(${concept})을 유지하면서, 학생들의 읽기 수준에 맞춘 [상·중·하 3단계 차별화 탐구 학습지]를 가공하세요.
+                당신은 초등학교 교사이자 인쇄용 학습지 편집 디자인 전문가입니다.
+                입력된 텍스트를 바탕으로 학생들에게 바로 인쇄해서 나누어줄 수 있는 완벽한 [상·중·하 3단계 차별화 탐구 학습지] 세트를 마크다운으로 생성하세요.
 
-                [구성 안내]
-                1. 🟩 [상 레벨] 깊이 있는 탐구형: 원문 맥락 유지, 비판적 사고 질문 및 비교 분석 활동
-                2. 🟦 [중 레벨] 표준 탐구형: 명확한 줄글 요약, 핵심개념 파악 중심 질문
-                3. 🟧 [하 레벨] 친절한 탐구형: 짧은 문장, 핵심 어휘 돋보기(어휘 설명 팁 박스) 포함, 단초형 지원 질문(빈칸/O,X 등)
+                [필수 마크다운 양식 준수 사항]
+                1. 각 단계별 학습지 시작 부분은 다음과 같이 학년 반 이름 적는 란을 포함하세요:
+                   <div class="student-info">____학년 ____반 번호:____ 이름: ______________</div>
+                2. 학습지 제목은 '# [수준: 상/중/하] 학습지 제목' 형태의 큰 제목(h1)을 사용하세요.
+                3. 학생이 읽을 원문(수준별로 각색된 본문)은 반드시 인용구(>) 블록 안에 예쁘게 배치하세요.
+                4. 질문(문항) 아래에는 학생이 직접 연필로 글씨를 쓸 수 있도록 빈 줄(--- 또는 마크다운 표의 빈칸 활용)을 충분히 제공하세요.
+                5. [하] 레벨의 경우 어려운 단어 뜻풀이(어휘 설명) 박스와, 쉬운 체크박스 퀴즈(- [ ])를 반드시 포함하세요.
             `;
-
-            const userPrompt = `
-                - 탐구 주제: ${topic}
-                - 원문 텍스트: ${text}
-                - 핵심 개념: ${concept}
-            `;
-
+            const userPrompt = `- 탐구 주제: ${topic}\n- 원문 텍스트: ${text}\n- 핵심 개념: ${concept}`;
             callGemini(systemPrompt, userPrompt, 'out-diff');
         }
 
-        // ================= TAB 3: GENERATE RUBRIC =================
+        // ================= TAB 3 =================
         function generateRubric() {
-            const grade = document.getElementById('t3-grade').value || document.getElementById('t3-grade').placeholder;
-            const theme = document.getElementById('t3-theme').value || document.getElementById('t3-theme').placeholder;
-            const central = document.getElementById('t3-central').value || document.getElementById('t3-central').placeholder;
-            const concepts = document.getElementById('t3-concepts').value || document.getElementById('t3-concepts').placeholder;
-            const atl = document.getElementById('t3-atl').value || document.getElementById('t3-atl').placeholder;
-            const task = document.getElementById('t3-task').value || document.getElementById('t3-task').placeholder;
-
-            const systemPrompt = `
-                당신은 초등학교 IB PYP 평가 및 루브릭 설계 전문 교육 컨설턴트입니다.
-                제시된 단원 정보를 바탕으로 초등학생 발달 수준에 맞춰 4단계 성취 수준 [초과 달성(Exceeding) - 달성(Meeting) - 발전 중(Developing) - 시작 단계(Emerging)]의 교사용 평가 루브릭을 제작하세요.
-                
-                [필수 원칙]
-                1. 평가 기준(Criteria) 3대 축: 
-                   - 개념적 이해 및 지식 (Concept & Knowledge)
-                   - 학습 접근 방법 / 과정·기능 (ATL & Skills)
-                   - 가치·태도 및 실천 (Learner Profile & Action)
-                2. 단원의 실제 어휘(예: 명량해전, 이순신, 강강술래, 우수영성지 등 입력된 어휘)를 반드시 성취 진술어 속에 구체적으로 포함하세요.
-                3. 가독성을 극대화한 마크다운 표(Table)로 출력을 제공하세요.
-            `;
-
-            const userPrompt = `
-                - 학년: ${grade}
-                - 초학문적 주제: ${theme}
-                - 중심 아이디어: ${central}
-                - 명시된 개념: ${concepts}
-                - 주요 ATL: ${atl}
-                - 수행 과제: ${task}
-            `;
-
+            const grade = document.getElementById('t3-grade').value;
+            const theme = document.getElementById('t3-theme').value;
+            const central = document.getElementById('t3-central').value;
+            const concepts = document.getElementById('t3-concepts').value;
+            const atl = document.getElementById('t3-atl').value;
+            const task = document.getElementById('t3-task').value;
+            const systemPrompt = `당신은 초등학교 IB PYP 루브릭 설계 전문가입니다. 제시된 단원 정보를 바탕으로 4단계(초과 달성-달성-발전 중-시작 단계) 교사용 평가 루브릭을 개념지식/ATL/실천 3가지 기준으로 작성하세요. 마크다운 표로 출력하세요.`;
+            const userPrompt = `- 학년: ${grade}\n- 중심 아이디어: ${central}\n- 개념: ${concepts}\n- ATL: ${atl}\n- 과제: ${task}`;
             callGemini(systemPrompt, userPrompt, 'out-rubric', (text) => {
-                lastGeneratedRubricText = text;
                 document.getElementById('cta-to-tab4').classList.remove('hidden');
             });
         }
 
-        // Transfer Tab 3 Result to Tab 4
         function transferToTab4() {
             fetchRubricFromTab3();
             switchTab('tab4');
-            generateSelfReflect();
         }
 
-        // Fetch Tab 3 generated Rubric into Tab 4 inputs
         function fetchRubricFromTab3() {
-            const currentRubricHTML = document.getElementById('out-rubric').innerHTML;
-            if (currentRubricHTML && !currentRubricHTML.includes('fa-clipboard-list')) {
-                document.getElementById('t4-crit-concept').value = "개념 및 지식 평가 기준: 3번 탭 루브릭 표 상단 개념 지표 연동";
-                document.getElementById('t4-crit-atl').value = "ATL 기능 기준: 3번 탭 루브릭 표 중단 탐구/조사/사고 지표 연동";
-                document.getElementById('t4-crit-action').value = "실천 및 태도 기준: 3번 탭 루브릭 표 하단 실천(Action) 및 IB 학습자상 지표 연동";
-                showToast("3번 탭에서 생성/수정된 평가 루브릭을 성공적으로 불러왔습니다!");
-            } else {
-                document.getElementById('t4-crit-concept').value = document.getElementById('t3-central').value || "명량해전의 배경과 과정, 이순신 장군의 리더십 및 문화유산의 특징을 이해한다.";
-                document.getElementById('t4-crit-atl').value = document.getElementById('t3-atl').value || "신뢰할 수 있는 자료를 스스로 조사하여 분석하고 보고서로 작성한다.";
-                document.getElementById('t4-crit-action').value = "지역 문화유산을 홍보하고 보존하기 위한 실천 방안을 제안하고 참여한다.";
-                showToast("기본 단원 정보가 4번 탭 양식에 입력되었습니다.");
-            }
+            document.getElementById('t4-crit-concept').value = "개념 및 지식 평가 기준: 3번 탭 루브릭 바탕으로 연동됨";
+            document.getElementById('t4-crit-atl').value = "ATL 기능 기준: 3번 탭 루브릭 바탕으로 연동됨";
+            document.getElementById('t4-crit-action').value = "실천 및 태도 기준: 3번 탭 루브릭 바탕으로 연동됨";
+            showToast("3번 탭 루브릭 기준을 불러왔습니다!");
         }
 
-        // ================= TAB 4: SELF ASSESSMENT =================
+        // ================= TAB 4 =================
         function generateSelfReflect() {
-            const critConcept = document.getElementById('t4-crit-concept').value || document.getElementById('t4-crit-concept').placeholder;
-            const critAtl = document.getElementById('t4-crit-atl').value || document.getElementById('t4-crit-atl').placeholder;
-            const critAction = document.getElementById('t4-crit-action').value || document.getElementById('t4-crit-action').placeholder;
+            const critConcept = document.getElementById('t4-crit-concept').value;
+            const critAtl = document.getElementById('t4-crit-atl').value;
+            const critAction = document.getElementById('t4-crit-action').value;
             const level = document.getElementById('t4-level').value;
-
             const systemPrompt = `
-                당신은 IB PYP 초등 학생 중심 평가 전문가입니다.
-                구조화된 3가지 평가 기준(개념/지식, ATL 기능, 실천/학습자상)을 바탕으로 초등학생들이 직접 자기 점검을 할 수 있는 『학생용 '나(I) 문장' 자기평가지』를 제작하세요.
+                당신은 학생용 학습지 및 성찰지 디자인 전문가입니다.
+                입력된 평가 기준(개념, ATL, 실천)을 바탕으로 학생이 직접 체크하고 글을 쓸 수 있는 '자기평가지(성찰지)'를 마크다운으로 생성하세요.
 
-                [작성 가이드라인]
-                - 타겟 수준: ${level}
-                - 모든 성취 항목을 "나는 ~을 할 수 있어요" 혹은 "나는 ~을 하려고 노력했어요" 형태로 작성하세요.
-                - 가독성이 높도록 표(Table) 형태 또는 예쁜 체크리스트로 마크다운을 출력하세요.
+                [필수 양식]
+                1. 우측 상단에 반드시 입력: <div class="student-info">____학년 ____반 이름: ________________</div>
+                2. 제목은 친근하게: # 나의 탐구 되돌아보기 🔍
+                3. 각 평가 기준별 성취도를 학생 스스로 체크할 수 있는 체크리스트(- [ ])를 문항별로 제공하세요. 
+                4. 마지막에는 '가장 재미있었던 점', '새롭게 알게 된 점', '앞으로의 다짐'을 글로 쓸 수 있도록 마크다운 표(Table)로 널찍한 빈칸 작성란을 만들어 주세요.
+                타겟 수준(${level})에 맞춰 단어를 쉽게 풀어 써주세요.
             `;
-
-            const userPrompt = `
-                [평가 기준 입력값]
-                - 개념 및 지식 기준: ${critConcept}
-                - ATL 기능 및 과제 수행 기준: ${critAtl}
-                - 실천 및 태도 기준: ${critAction}
-            `;
-
+            const userPrompt = `[기준]\n- 개념/지식: ${critConcept}\n- ATL: ${critAtl}\n- 실천: ${critAction}`;
             callGemini(systemPrompt, userPrompt, 'out-self');
         }
 
-        // ================= TAB 5: REPORT COMMENT =================
+        // ================= TAB 5 =================
         function generateReportComment() {
-            const student = document.getElementById('t5-student').value || document.getElementById('t5-student').placeholder;
-            const obs = document.getElementById('t5-obs').value || document.getElementById('t5-obs').placeholder;
+            const student = document.getElementById('t5-student').value;
+            const obs = document.getElementById('t5-obs').value;
             const atl = document.getElementById('t5-atl').value;
             const lp = document.getElementById('t5-lp').value;
-
-            const systemPrompt = `
-                당신은 IB PYP 학생 성장 기록 및 나이스 생활기록부 서술 전문가입니다.
-                교사의 단편적 관찰 메모를 바탕으로 IB의 핵심 요소인 ATL 역량과 IB 학습자상(Learner Profile)이 완벽히 연계된 격식 있고 구체적인 종합 성찰 문장을 작성하세요.
-
-                [작성 요령]
-                1. 학생 이름/식별자: ${student}
-                2. '결과'보다는 탐구 과정에서의 성장, ATL 역량 발현, 학습자상 태도를 명시적으로 서술하세요.
-                3. 초등학교 학교생활기록부/성장기록 양식에 맞춰 자연스러운 서술형 3~4문장 옵션 2가지를 제시하세요.
-            `;
-
-            const userPrompt = `
-                - 관찰 메모: ${obs}
-                - 연계 ATL: ${atl}
-                - 연계 학습자상: ${lp}
-            `;
-
+            const systemPrompt = `당신은 나이스 생활기록부 서술 전문가입니다. 관찰 메모를 바탕으로 ATL 역량과 IB 학습자상을 연계하여 격식 있고 구체적인 종합 성찰 문장 2가지를 제시하세요.`;
+            const userPrompt = `- 학생: ${student}\n- 메모: ${obs}\n- 연계 ATL: ${atl}\n- 학습자상: ${lp}`;
             callGemini(systemPrompt, userPrompt, 'out-rep');
         }
 
-        // ================= COMPREHENSIVE ALL-TAB REPORT MODAL =================
         function openFinalReportModal() {
             const modal = document.getElementById('report-modal');
             const body = document.getElementById('modal-report-body');
-
-            const qOut = document.getElementById('out-q').innerHTML;
-            const diffOut = document.getElementById('out-diff').innerHTML;
-            const rubricOut = document.getElementById('out-rubric').innerHTML;
-            const selfOut = document.getElementById('out-self').innerHTML;
-            const repOut = document.getElementById('out-rep').innerHTML;
-
-            const dateStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-
             body.innerHTML = `
-                <div style="text-align: center; margin-bottom: 2rem; border-bottom: 3px double #1e3a8a; padding-bottom: 1.5rem;">
-                    <h1 style="font-size: 2rem; color: #1e3a8a; margin-bottom: 0.5rem;">IB PYP 탐구 단원(UOI) 종합 설계 보고서</h1>
-                    <p style="font-size: 0.9rem; color: #475569;">작성일자: ${dateStr} | 작성기관: 우수영초등학교 IB PYP 연구회</p>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1 style="font-size: 2rem; color: #1e3a8a;">IB PYP 탐구 단원(UOI) 종합 설계 보고서</h1>
                 </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">1. 핵심개념 탐구 질문 (Inquiry Questions)</h2>
-                    ${qOut.includes('fa-circle-question') ? '<p style="color:#94a3b8;font-style:italic;">1번 탭의 탐구 질문이 생성되지 않았습니다.</p>' : qOut}
-                </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">2. 수준별 차별화 탐구 학습지 (Differentiation)</h2>
-                    ${diffOut.includes('fa-layer-group') ? '<p style="color:#94a3b8;font-style:italic;">2번 탭의 차별화 학습지가 생성되지 않았습니다.</p>' : diffOut}
-                </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">3. IB 4단계 교사용 평가 루브릭 (Assessment Rubric)</h2>
-                    ${rubricOut.includes('fa-clipboard-list') ? '<p style="color:#94a3b8;font-style:italic;">3번 탭의 루브릭이 생성되지 않았습니다.</p>' : rubricOut}
-                </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">4. 학생용 '나(I) 문장' 자기평가지 (Student Self-Assessment)</h2>
-                    ${selfOut.includes('fa-smile-beam') ? '<p style="color:#94a3b8;font-style:italic;">4번 탭의 자기평가지가 생성되지 않았습니다.</p>' : selfOut}
-                </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">5. 학생 관찰 및 생기부/성장기록 종합의견 (Report Comment)</h2>
-                    ${repOut.includes('fa-pen-fancy') ? '<p style="color:#94a3b8;font-style:italic;">5번 탭의 성장기록문이 생성되지 않았습니다.</p>' : repOut}
-                </div>
+                <div><h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">1. 핵심개념 탐구 질문</h2>${document.getElementById('out-q').innerHTML}</div>
+                <div><h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">2. 수준별 탐구 학습지</h2>${document.getElementById('out-diff').innerHTML}</div>
+                <div><h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">3. 교사용 평가 루브릭</h2>${document.getElementById('out-rubric').innerHTML}</div>
+                <div><h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">4. 학생용 자기평가지</h2>${document.getElementById('out-self').innerHTML}</div>
+                <div><h2 style="color: #1e3a8a; border-left: 4px solid #2563eb; padding-left: 0.5rem;">5. 생기부 종합의견</h2>${document.getElementById('out-rep').innerHTML}</div>
             `;
-
             modal.classList.remove('hidden');
         }
-
-        function closeFinalReportModal() {
-            document.getElementById('report-modal').classList.add('hidden');
-        }
+        function closeFinalReportModal() { document.getElementById('report-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
